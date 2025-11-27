@@ -2,9 +2,9 @@
 
 # Born2BeRoot – 42 Madrid | Fundación Telefónica
 
-Born2BeRoot es un proyecto de iniciación a la administración de sistemas dentro del cursus de 42 Network. Consiste en configurar un servidor Linux desde una instalación mínima y sin interfaz gráfica. Incluye particionado con LVM, políticas de contraseñas, seguridad, gestión de usuarios y grupos, configuración de sudo, UFW, SSH y un script de monitorización periódica del sistema.
+Born2BeRoot es un proyecto deadministración de sistemas dentro del cursus de 42 Network. Consiste en configurar un servidor Linux desde una instalación mínima y sin interfaz gráfica, incluyendo particionado con LVM, políticas de contraseñas, seguridad, gestión de usuarios y grupos, configuración de sudo, UFW, SSH y un script de monitorización periódica del sistema.
 
-Este repositorio contiene **mi script `monitoring.sh`** y apuntes esenciales para preparar la evaluación.
+Este repositorio contiene **mi script `monitoring.sh`** y apuntes esenciales que pueden ayudar a preparar la evaluación de dicho proyecto si vas a realizarlo o te encuentras en ello.
 
 ---
 
@@ -43,10 +43,10 @@ Un servidor físico tiene componentes como CPU, RAM, disco, red y un sistema ope
 
 La capa que permite esto es el **hipervisor**, un software (como VirtualBox) que crea y gestiona VMs, repartiendo CPU, memoria y recursos, y evitando que interfieran entre sí.
 
-Cada VM necesita un sistema operativo. En 42 se puede usar **Debian** o **CentOS**:
+Cada VM necesita un sistema operativo. En 42 se puede usar **Debian** o **Rocky**:
 
 * **Debian**: más sencillo, muy personalizable, fácil de actualizar y más amigable para principiantes.
-* **CentOS**: orientado a entornos empresariales, muy robusto y con mayor énfasis en seguridad.
+* **Rocky**: orientado a entornos empresariales, muy robusto y con mayor énfasis en seguridad.
   Por eso 42 recomienda empezar con Debian.
 
 ### ¿Para qué sirve una máquina virtual?
@@ -64,7 +64,7 @@ En resumen, una VM funciona como un ordenador normal, pero está contenida dentr
 * **Debian**:
 Debian es **recomendado para principiantes** porque es más sencillo de usar en administración de sistemas. Tiene mucha documentación y tutoriales, es muy estable y fiable, cuenta con una **comunidad grande y activa**, y usa **APT**, un gestor de paquetes **intuitivo y bien documentado**.
 
-### ¿Por qué has elegido Rocky? En caso de haber elegido Rcoky
+### ¿Por qué has elegido Rocky? En caso de haber elegido Rocky
 * **Rocky**:
 Rocky/CentOS es una opción **orientada a entornos profesionales** gracias a su estabilidad y soporte a largo plazo. Se caracteriza por ofrecer un sistema robusto, con actualizaciones controladas y predecibles, muy adecuado para aprender administración de sistemas en un contexto similar al de servidores en producción. Incorpora **SELinux**, un sistema de seguridad avanzado que permite aplicar políticas estrictas y gran nivel de control. Su gestor de paquetes DNF es moderno, eficiente y facilita el manejo de dependencias. Además, dispone de amplia documentación heredada del ecosistema RHEL (Red Hat Enterprise Linux), junto con una comunidad activa que mantiene Rocky Linux como sucesor estable tras el fin de CentOS clásico. Es una distribución adecuada cuando se busca un entorno seguro, consistente y con **enfoque empresarial**.
 
@@ -74,39 +74,53 @@ Rocky/CentOS es una opción **orientada a entornos profesionales** gracias a su 
 * **aptitude** → Alternativa más “inteligente”, con semi-interfaz.
 La diferencia principal es que apt es una interfaz más moderna y simplificada del gestor de paquetes APT, mientras que aptitude es una herramienta separada con una interfaz de terminal interactiva basada en curses que ofrece más funciones, como la resolución inteligente de dependencias y la gestión de paquetes en un formato de menú.
 
-* **AppArmor** → Sistema de control de permisos por aplicación.
-Se trata de un módulo de seguridad del kernel de Linux que restringe las capacidades de los programas mediante perfiles de seguridad basados en rutas de archivos.
+* **AppArmor** → sistema de seguridad que limita qué puede hacer cada programa (archivos a los que puede acceder, permisos, etc.). Añade capas de protección sin complicar demasiado la configuración. Explicado de una forma un poco más técnica; se trata de un módulo de seguridad del kernel de Linux que restringe las capacidades de los programas mediante perfiles de seguridad basados en rutas de archivos.
 Su función es aplicar el control de acceso obligatorio (MAC) para limitar lo que un programa puede hacer, como acceder a archivos, redes o sockets. Es conocido por ser más fácil de usar que otras opciones y viene habilitado por defecto en distribuciones como Ubuntu y Debian. 
 
 ### SELinux y DNF (Rocky)
 
-* **SELinux** → Se trata de un módulo de seguridad de Linux (Security-Enhanced Linux) que implementa un control de acceso obligatorio (MAC) para proteger el sistema
-* **DNF** → Gestor de paquetes moderno.
+* **SELinux** → Se trata de un módulo de seguridad de Linux (Security-Enhanced Linux) que implementa un control de acceso obligatorio (MAC) para proteger el sistema. Muy seguro, pero también más complejo de configurar que AppArmor.
+* **DNF** → Gestor de paquetes modernode CentOS/RHEL. Más moderno que yum, maneja mejor dependencias y actualizaciones.
 
-### Política de contraseñas estricta
+### Ventajas y desventajas de una política de contraseñas estricta.
 
-Seguridad más alta, pero puede ser molesta y generar malas prácticas si se exagera.
+| Ventajas                                   | Desventajas                                                           |
+|--------------------------------------------|-----------------------------------------------------------------------|
+| Más seguridad.                              | Puede resultar molesto para los usuarios.                                  |
+| Reduce accesos no autorizados.              | Contraseñas demasiado complejas llevan a que la gente las apunte en papel. |
+| Obliga a renovar contraseñas periódicamente.| Si la política es exagerada, provoca errores y pérdida de tiempo.     |
+
+Por tanto, **debe equilibrar seguridad y usabilidad**. No sirve una política ultra estricta si los usuarios no la pueden cumplir.
 
 ### ¿Qué es una partición? ¿Qué es LVM?
 
-* **Partición**: división lógica del disco.
-* **LVM**: sistema flexible que permite redimensionar volúmenes, unir discos y crear snapshots sin romper nada.
+* **Partición**: división lógica de un disco físico. Permite separar el sistema, datos, swap, etc., organizando mejor el almacenamiento.
+
+* **LVM**: capa flexible encima del disco que permite:
+  - Redimensionar volúmenes sin desmontar discos.
+  - Unir varios discos en uno lógico.
+  - Crear snapshots.
+  - Ampliar almacenamiento sin romper nada.
+  - Mucha más flexibilidad que las particiones tradicionales.
 
 ### ¿Qué es sudo?
+Comando que permite ejecutar acciones como superusuario sin iniciar sesión como root. Controla quién puede hacer qué, y deja registro de todas las acciones para auditoría.
 
-Permite ejecutar acciones como administrador sin iniciar sesión como root, registrando todas las acciones.
 
 ### ¿Qué es UFW?
+UFW es un firewall sencillo de configurar. Sirve para:
 
-Firewall simplificado para permitir/bloquear puertos.
+- Permitir o bloquear puertos.
+- Proteger la máquina del tráfico no autorizado.
+- Gestionar reglas de red de forma clara (`allow`, `deny`).
+
 
 ### ¿Qué es SSH?
-
-Protocolo seguro para acceder a máquinas remotas. Todo va cifrado.
-
+SSH es un protocolo para conectarse de forma remota a otra máquina con cifrado.
+Aporta una conexión segura, autenticación fuerte, transferencia cifrada de datos y posibilidad de administrar servidores a distancia de forma segura.
 ### ¿Qué es cron?
 
-Programador de tareas. En el proyecto se usa para lanzar `monitoring.sh`.
+Sistema que ejecuta tareas programadas automáticamente. Sirve para lanzar scripts cada minuto, hora, día, semana o cuando se necesite. Ideal para mantenimiento, backups y automatización. Y en este proyecto se ha usado para programar que se lance el script monitoring.sh que muestra stats de la máquina en la terminal de los usuarios con sesión iniciada. En el proyecto se usa para lanzar [monitoring.sh](https://github.com/maramartinezvargas/Born2BeRoot/blob/main/monitoring.sh)
 
 ---
 

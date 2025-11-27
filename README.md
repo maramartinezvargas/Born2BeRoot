@@ -192,7 +192,7 @@ sudo crontab -e
 
 ---
 
-# Explicación breve del script
+# Explicación breve de los puntos claves del script monitoring.sh
 
 * **uname -a** → arquitectura y kernel.
 * **/proc/cpuinfo** → CPUs físicas y lógicas.

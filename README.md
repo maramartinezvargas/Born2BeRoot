@@ -2,7 +2,7 @@
 
 # Born2BeRoot – 42 Madrid | Fundación Telefónica
 
-Born2BeRoot es un proyecto deadministración de sistemas dentro del cursus de 42 Network. Consiste en configurar un servidor Linux desde una instalación mínima y sin interfaz gráfica, incluyendo particionado con LVM, políticas de contraseñas, seguridad, gestión de usuarios y grupos, configuración de sudo, UFW, SSH y un script de monitorización periódica del sistema.
+Born2BeRoot es un proyecto de administración de sistemas dentro del cursus de 42 Network. Consiste en configurar un servidor Linux desde una instalación mínima y sin interfaz gráfica, incluyendo particionado con LVM, políticas de contraseñas, seguridad, gestión de usuarios y grupos, configuración de sudo, UFW, SSH y un script de monitorización periódica del sistema.
 
 Este repositorio contiene **mi script `monitoring.sh`** y apuntes esenciales que pueden ayudar a preparar la evaluación de dicho proyecto si vas a realizarlo o te encuentras en ello.
 
